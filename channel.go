@@ -1,12 +1,14 @@
 package websocket
 
 import (
+	"net"
+
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 	"github.com/mailru/easygo/netpoll"
-	"net"
 )
 
+// Channel is a websocket connection that messages are read from and written to.
 type Channel struct {
 	handler *Handler // Handle managing this connection.
 	conn    net.Conn // Websocket connection.

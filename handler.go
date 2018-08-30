@@ -7,8 +7,9 @@ import (
 	"github.com/mailru/easygo/netpoll"
 )
 
-// A high performance websocket that uses netpoll with read and write
-// concurrency to allow a high number of concurrent websocket connections.
+// Handler is a high performance websocket handler that uses netpoll with
+// read and write concurrency to allow a high number of concurrent websocket
+// connections.
 type Handler struct {
 	callback  RecievedCallback
 	poller    netpoll.Poller
@@ -16,7 +17,7 @@ type Handler struct {
 	writePool *pool
 }
 
-// Represents operation code.
+// OpCode represents an operation code.
 type OpCode ws.OpCode
 
 // Operation codes that will be used in the RecievedCallback. rfc6455 defines
@@ -26,10 +27,11 @@ const (
 	OpBinary OpCode = 0x2
 )
 
-// Callback on recieve.
+// RecievedCallback is the signature for the callback called when a message
+// is recieved on a Channel.
 type RecievedCallback func(c *Channel, op OpCode, data []byte)
 
-// Initialize the websocket handler.
+// NewHandler creates a new websocket handler.
 func NewHandler(callback RecievedCallback, readPoolConcurrency int, writePoolConcurrency int) (*Handler, error) {
 	// Creates the poller that is used when a websocket connects. This is used
 	// to prevent the spawning of a 2 goroutines per connection.
@@ -47,7 +49,8 @@ func NewHandler(callback RecievedCallback, readPoolConcurrency int, writePoolCon
 	}, nil
 }
 
-// Handles the websocket upgrade from HTTP to Websocket.
+// UpgradeHandler upgrades the incoming http request to become a websocket
+// connection.
 func (h *Handler) UpgradeHandler(w http.ResponseWriter, r *http.Request) {
 	conn, _, _, err := ws.UpgradeHTTP(r, w)
 	if err != nil {
