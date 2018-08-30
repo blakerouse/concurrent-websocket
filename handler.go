@@ -49,9 +49,8 @@ func NewHandler(callback RecievedCallback, readPoolConcurrency int, writePoolCon
 	}, nil
 }
 
-// UpgradeHandlerRetChannel upgrades the incoming http request to become a
-// websocket connection and returns the newly created channel.
-func (h *Handler) UpgradeHandlerRetChannel(w http.ResponseWriter, r *http.Request) (*Channel, error) {
+// CreateChannel upgrades the incoming http request into a websocket channel.
+func (h *Handler) CreateChannel(w http.ResponseWriter, r *http.Request) (*Channel, error) {
 	conn, _, _, err := ws.UpgradeHTTP(r, w)
 	if err != nil {
 		// Ignore the error, the UpdateHTTP handled notifying the client.
@@ -67,7 +66,7 @@ func (h *Handler) UpgradeHandlerRetChannel(w http.ResponseWriter, r *http.Reques
 // UpgradeHandler upgrades the incoming http request to become a websocket
 // connection.
 func (h *Handler) UpgradeHandler(w http.ResponseWriter, r *http.Request) {
-	h.UpgradeHandler(w, r)
+	h.CreateChannel(w, r)
 }
 
 // Start the reading of the connection from epoll.
