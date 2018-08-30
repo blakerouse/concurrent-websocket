@@ -7,8 +7,8 @@ import (
 	"github.com/mailru/easygo/netpoll"
 )
 
-// A high performance websocket that uses netpoll with read concurrency to
-// allow a high number of concurrent websocket connections.
+// A high performance websocket that uses netpoll with read and write
+// concurrency to allow a high number of concurrent websocket connections.
 type Handler struct {
 	callback  RecievedCallback
 	poller    netpoll.Poller
