@@ -26,10 +26,12 @@ func main() {
     r := gin.Default()
 
     concurrency := 128
-	wh, _ := websocket.NewHandler(func(c *websocket.Channel, op websocket.OpCode, data []byte) {
+    echo := func(c *websocket.Channel, op websocket.OpCode, data []byte) {
         // echo
         c.Send(op, data)
-    }, concurrency, concurrency)
+    }
+
+    wh, _ := websocket.NewHandler(echo, concurrency, concurrency)
 	r.GET("/ws", gin.WrapF(wh.UpgradeHandler))
 
 	r.Run() // listen and serve on 0.0.0.0:8080
