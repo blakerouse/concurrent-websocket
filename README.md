@@ -30,7 +30,7 @@ func main() {
         // echo
         c.Send(op, data)
     }, concurrency, concurrency)
-	r.GET("/ws", wh.UpgradeHandler)
+	r.GET("/ws", gin.WrapF(wh.UpgradeHandler))
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
