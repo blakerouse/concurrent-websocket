@@ -14,6 +14,9 @@ type Channel struct {
 	conn    net.Conn // Websocket connection.
 
 	readDesc *netpoll.Desc // Read descriptor for netpoll.
+
+	// OnClose is called when the channel is closed.
+	OnClose func()
 }
 
 // Create a new channel for the connection.
@@ -29,6 +32,9 @@ func newChannel(conn net.Conn, handler *Handler) *Channel {
 func (c *Channel) Close() {
 	c.handler.poller.Stop(c.readDesc)
 	c.conn.Close()
+	if c.OnClose != nil {
+		c.OnClose()
+	}
 }
 
 // Send a message over the channel. Once write concurrency of the handler is
