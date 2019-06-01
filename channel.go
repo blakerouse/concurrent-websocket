@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net"
 	"reflect"
+	"unsafe"
 
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
@@ -23,9 +24,11 @@ type Channel struct {
 
 // getConnFromTLSConn returns the internal wrapped connection from the tls.Conn.
 func getConnFromTLSConn(tlsConn *tls.Conn) net.Conn {
-	pointerVal := reflect.ValueOf(tlsConn)
-	val := reflect.Indirect(pointerVal)
-	conn := val.FieldByName("conn")
+	// XXX: This is really BAD!!! Only way currently to get the underlying
+	// connection of the tls.Conn. At least until
+	// https://github.com/golang/go/issues/29257 is solved.
+	conn := reflect.ValueOf(tlsConn).Elem().FieldByName("conn")
+	conn = reflect.NewAt(conn.Type(), unsafe.Pointer(conn.UnsafeAddr())).Elem()
 	return conn.Interface().(net.Conn)
 }
 

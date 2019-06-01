@@ -39,6 +39,6 @@ func main() {
 ```
 
 ```
-# run example.go and visit 0.0.0.0:8080/ping on browser
+# run example.go and visit 0.0.0.0:8080/ws on browser
 $ go run example.go
 ```
