@@ -1,8 +1,9 @@
 package websocket
 
 import (
-	"fmt"
+	"crypto/tls"
 	"net"
+	"reflect"
 
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
@@ -20,14 +21,25 @@ type Channel struct {
 	OnClose func()
 }
 
+// getConnFromTLSConn returns the internal wrapped connection from the tls.Conn.
+func getConnFromTLSConn(tlsConn *tls.Conn) net.Conn {
+	pointerVal := reflect.ValueOf(tlsConn)
+	val := reflect.Indirect(pointerVal)
+	conn := val.FieldByName("y")
+	return conn.Interface().(net.Conn)
+}
+
 // Create a new channel for the connection.
 func newChannel(conn net.Conn, handler *Handler) *Channel {
-	// Added to fix issue with a TLS based connection.
-	fmt.Printf("net.Conn: %+v\n", conn)
+	fdConn := conn
+	tlsConn, ok := conn.(*tls.Conn)
+	if ok {
+		fdConn = getConnFromTLSConn(tlsConn)
+	}
 	return &Channel{
 		handler:  handler,
 		conn:     conn,
-		readDesc: netpoll.Must(netpoll.HandleReadOnce(conn)),
+		readDesc: netpoll.Must(netpoll.HandleReadOnce(fdConn)),
 	}
 }
 
