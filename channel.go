@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"fmt"
 	"net"
 
 	"github.com/gobwas/ws"
@@ -21,6 +22,8 @@ type Channel struct {
 
 // Create a new channel for the connection.
 func newChannel(conn net.Conn, handler *Handler) *Channel {
+	// Added to fix issue with a TLS based connection.
+	fmt.Printf("net.Conn: %+v\n", conn)
 	return &Channel{
 		handler:  handler,
 		conn:     conn,
