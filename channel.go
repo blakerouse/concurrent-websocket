@@ -25,7 +25,7 @@ type Channel struct {
 func getConnFromTLSConn(tlsConn *tls.Conn) net.Conn {
 	pointerVal := reflect.ValueOf(tlsConn)
 	val := reflect.Indirect(pointerVal)
-	conn := val.FieldByName("y")
+	conn := val.FieldByName("conn")
 	return conn.Interface().(net.Conn)
 }
 
