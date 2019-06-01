@@ -2,9 +2,9 @@ github.com/gobwas/httphead v0.0.0-20180130184737-2c6c146eadee h1:s+21KNqlpePfkah
 github.com/gobwas/httphead v0.0.0-20180130184737-2c6c146eadee/go.mod h1:L0fX3K22YWvt/FAX9NnzrNzcI4wNYi9Yku4O0LKYflo=
 github.com/gobwas/pool v0.2.0 h1:QEmUOlnSjWtnpRGHF3SauEiOsy82Cup83Vf2LcMlnc8=
 github.com/gobwas/pool v0.2.0/go.mod h1:q8bcK0KcYlCgd9e7WYLm9LpyS+YeLd8JVDW6WezmKEw=
-github.com/gobwas/ws v1.0.0 h1:1WdyfgUcImUfVBvYbsW2krIsnko+1QU2t45soaF8v1M=
-github.com/gobwas/ws v1.0.0/go.mod h1:szmBTxLgaFppYjEmNtny/v3w89xOydFnnZMcgRRu/EM=
+github.com/gobwas/ws v1.0.1 h1:iYpM3WoNpsexO6bqCN1MnvVRylnKg6278zivIZDRXUM=
+github.com/gobwas/ws v1.0.1/go.mod h1:szmBTxLgaFppYjEmNtny/v3w89xOydFnnZMcgRRu/EM=
 github.com/mailru/easygo v0.0.0-20180630075556-0c8322a753d0 h1:o0WDRM1ApjP4UFwhPcXkHe9sKMycnp0W0EbIcW8G2a8=
 github.com/mailru/easygo v0.0.0-20180630075556-0c8322a753d0/go.mod h1:tHCZHV8b2A90ObojrEAzY0Lb03gxUxjDHr5IJyAh4ew=
-golang.org/x/sys v0.0.0-20190412213103-97732733099d h1:+R4KGOnez64A81RvjARKc4UT5/tI9ujCIVX+P5KiHuI=
-golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20190531175056-4c3a928424d2 h1:T5DasATyLQfmbTpfEXx/IOL9vfjzW6up+ZDkmHvIf2s=
+golang.org/x/sys v0.0.0-20190531175056-4c3a928424d2/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
