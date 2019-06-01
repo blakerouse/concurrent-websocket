@@ -13,7 +13,7 @@ import (
 )
 
 type ExampleMessage struct {
-	Body string `json:"body"`
+	Count int `json:"count"`
 }
 
 func TestHTTPEcho(t *testing.T) {
@@ -39,21 +39,23 @@ func TestHTTPEcho(t *testing.T) {
 	}
 	defer c.Close()
 
-	err = c.WriteJSON(&ExampleMessage{
-		Body: "test",
-	})
-	if err != nil {
-		panic(err)
-	}
+	for i := 0; i < 3; i++ {
+		err = c.WriteJSON(&ExampleMessage{
+			Count: i,
+		})
+		if err != nil {
+			panic(err)
+		}
 
-	var resp ExampleMessage
-	err = c.ReadJSON(&resp)
-	if err != nil {
-		panic(err)
-	}
+		var resp ExampleMessage
+		err = c.ReadJSON(&resp)
+		if err != nil {
+			panic(err)
+		}
 
-	if resp.Body != "test" {
-		t.Error("should have recieved echo response of: test")
+		if resp.Count != i {
+			t.Errorf("should have recieved echo response of: count = %d", i)
+		}
 	}
 }
 
@@ -86,21 +88,23 @@ func TestHTTPSEcho(t *testing.T) {
 	}
 	defer c.Close()
 
-	err = c.WriteJSON(&ExampleMessage{
-		Body: "test",
-	})
-	if err != nil {
-		panic(err)
-	}
+	for i := 0; i < 3; i++ {
+		err = c.WriteJSON(&ExampleMessage{
+			Count: i,
+		})
+		if err != nil {
+			panic(err)
+		}
 
-	var resp ExampleMessage
-	err = c.ReadJSON(&resp)
-	if err != nil {
-		panic(err)
-	}
+		var resp ExampleMessage
+		err = c.ReadJSON(&resp)
+		if err != nil {
+			panic(err)
+		}
 
-	if resp.Body != "test" {
-		t.Error("should have recieved echo response of: test")
+		if resp.Count != i {
+			t.Errorf("should have recieved echo response of: count = %d", i)
+		}
 	}
 }
 
