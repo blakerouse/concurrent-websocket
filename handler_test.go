@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -60,7 +61,14 @@ func TestHTTPEcho(t *testing.T) {
 }
 
 func TestHTTPSEcho(t *testing.T) {
+	var wg sync.WaitGroup
+	wg.Add(1)
+
 	echo := func(c *Channel, op OpCode, data []byte) {
+		c.SetOnClose(func() {
+			wg.Done()
+		})
+
 		// echo
 		c.Send(op, data)
 	}
@@ -86,25 +94,31 @@ func TestHTTPSEcho(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	defer c.Close()
 
 	for i := 0; i < 3; i++ {
 		err = c.WriteJSON(&ExampleMessage{
 			Count: i,
 		})
 		if err != nil {
+			c.Close()
 			panic(err)
 		}
 
 		var resp ExampleMessage
 		err = c.ReadJSON(&resp)
 		if err != nil {
+			c.Close()
 			panic(err)
 		}
 
 		if resp.Count != i {
 			t.Errorf("should have recieved echo response of: count = %d", i)
 		}
+	}
+	c.Close()
+	timedOut := waitTimeout(&wg, time.Second)
+	if timedOut {
+		t.Errorf("timed out waiting for OnClose to be called")
 	}
 }
 
@@ -120,4 +134,19 @@ func rootCAs(t *testing.T, s *httptest.Server) *x509.CertPool {
 		}
 	}
 	return certs
+}
+
+// waitGroupTimeout waits for the waitgroup for the specified max timeout.
+func waitGroupTimeout(wg *sync.WaitGroup, timeout time.Duration) bool {
+	c := make(chan struct{})
+	go func() {
+		defer close(c)
+		wg.Wait()
+	}()
+	select {
+	case <-c:
+		return false // completed normally
+	case <-time.After(timeout):
+		return true // timed out
+	}
 }

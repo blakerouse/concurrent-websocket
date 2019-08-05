@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net"
 	"reflect"
+	"sync"
 	"unsafe"
 
 	"github.com/gobwas/ws"
@@ -18,8 +19,9 @@ type Channel struct {
 
 	readDesc *netpoll.Desc // Read descriptor for netpoll.
 
-	// OnClose is called when the channel is closed.
-	OnClose func()
+	// onClose is called when the channel is closed.
+	onClose    func()
+	onCloseMux sync.Mutex
 }
 
 // getConnFromTLSConn returns the internal wrapped connection from the tls.Conn.
@@ -50,8 +52,10 @@ func newChannel(conn net.Conn, handler *Handler) *Channel {
 func (c *Channel) Close() {
 	c.handler.poller.Stop(c.readDesc)
 	c.conn.Close()
-	if c.OnClose != nil {
-		c.OnClose()
+	c.onCloseMux.Lock()
+	defer c.onCloseMux.Unlock()
+	if c.onClose != nil {
+		c.onClose()
 	}
 }
 
@@ -64,6 +68,13 @@ func (c *Channel) Send(op OpCode, data []byte) {
 			c.Close()
 		}
 	})
+}
+
+// SetOnClose sets the callback to get called when the channel is closed.
+func (c *Channel) SetOnClose(callback func()) {
+	c.onCloseMux.Lock()
+	defer c.onCloseMux.Unlock()
+	c.onClose = callback
 }
 
 // Read and process the message from the connection.
