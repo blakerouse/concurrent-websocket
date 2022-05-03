@@ -5,7 +5,7 @@ write concurrency to allow a high number of concurrent websocket connections.
 
 ## Prerequisite
 
-Requires Go 1.11 or later, because of the usage of modules.
+Requires Go 1.18 or later, because of https://github.com/golang/go/issues/29257.
 
 ## Quick start
 

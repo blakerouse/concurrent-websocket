@@ -3,9 +3,7 @@ package websocket
 import (
 	"crypto/tls"
 	"net"
-	"reflect"
 	"sync"
-	"unsafe"
 
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
@@ -24,22 +22,12 @@ type Channel struct {
 	onCloseMux sync.Mutex
 }
 
-// getConnFromTLSConn returns the internal wrapped connection from the tls.Conn.
-func getConnFromTLSConn(tlsConn *tls.Conn) net.Conn {
-	// XXX: This is really BAD!!! Only way currently to get the underlying
-	// connection of the tls.Conn. At least until
-	// https://github.com/golang/go/issues/29257 is solved.
-	conn := reflect.ValueOf(tlsConn).Elem().FieldByName("conn")
-	conn = reflect.NewAt(conn.Type(), unsafe.Pointer(conn.UnsafeAddr())).Elem()
-	return conn.Interface().(net.Conn)
-}
-
 // Create a new channel for the connection.
 func newChannel(conn net.Conn, handler *Handler) *Channel {
 	fdConn := conn
 	tlsConn, ok := conn.(*tls.Conn)
 	if ok {
-		fdConn = getConnFromTLSConn(tlsConn)
+		fdConn = tlsConn.NetConn()
 	}
 	return &Channel{
 		handler:  handler,
